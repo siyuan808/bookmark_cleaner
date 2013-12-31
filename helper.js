@@ -1,11 +1,12 @@
 //Document ready
 $(function () {	
 	var bms = [];
-	var his = [];
 			
 	chrome.storage.local.get(null, function(storage){
 		var d = storage['durationDays'];
-		$("#setting_value").attr('value', d);
+		if(d != null)
+			$("#setting_value").attr('value', d);
+		else $("#setting_value").attr('value', 30);
 		
 		var last = storage['lastDate'];
 		if(last != null) {
@@ -115,7 +116,7 @@ $(function () {
 				$("#link"+j).click({total: num_page, page: j}, showPage);
 			}
 			
-			$("#link1").trigger("click");
+			// $("#link1").trigger("click");
 		}
 		changeStateTo("suggestion");
 	}
@@ -124,6 +125,7 @@ $(function () {
 		for(var i=1; i<=event.data.total; i++) {
             $(".page"+i).hide();
         }
+        $("#link"+event.data.page).css('color', '#f00000');
 		$(".page"+event.data.page).show();
 		// $("#head").html("total: " + event.data.total + "Page: " + event.data.page);
 		// $("tr").each(function () {$(this).hide();});
