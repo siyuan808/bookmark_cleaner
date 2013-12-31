@@ -9,9 +9,8 @@
   	"bookmarks",
     "history",
     "storage",
-    "chrome://favicon/",
-    "tabs"
-  ],
+    "chrome://favicon/"
+   ],
   
   "browser_action": {
     "default_icon": "icon.png",

@@ -88,32 +88,44 @@ $(function () {
 	function formateSuggestion(sug_bms) {
 		// $("#head").html("suggestion: " + sug_bms.length);
 		for(var i = 0; i < sug_bms.length; i++) {
+			var cnt = 0;
 			chrome.bookmarks.get(sug_bms[i].id, function(bookmarkNodes) {
-				bookmarkNodes.forEach( function (bookmarkNode) {
-					$("#bookmarks").after("<tr><td><input type=\"checkbox\" data-key='" + bookmarkNode.id + "'></input></td><td><img src='chrome://favicon/" + bookmarkNode.url + "'/></td><td><a href='#' title='" + bookmarkNode.url + "'>" + bookmarkNode.title + "</a></td></tr>");
+				bookmarkNodes.forEach(function (bookmarkNode) {
+					var pg = Math.floor(cnt/10) + 1;
+					cnt += 1;
+					// $("#head").html(pg);
+					$("#bookmarks").after("<tr class=\"page" + pg +"\"><td><input type=\"checkbox\" data-key='" + bookmarkNode.id + "'></input></td><td><img src='chrome://favicon/" + bookmarkNode.url + "'/></td><td><a href='#' title='" + bookmarkNode.url + "'>" + bookmarkNode.title + "</a></td></tr>");
 				});
 			});
 		}
 		
 		$("#progress").attr('value', 100);
 		
-		// var page = Math.ceil(sug_bms.length / 10);
-		// // $("#head").html("Page: " + page);
-		// if(page > 1) {
-			// var links = "<tr><td></td><td></td><td>";
-			// for(var j=1; j<=page; j++) {
-				// var lid = "page" + j;
-				// links += "<a href=\"#\" id=\""+ lid +"\">" + j +"</a>&nbsp;";
-			// }
-			// links += "</td></tr>";
-			// $("#bookmarks").after(links);
-		// }
-		// showPage(1);
+		var num_page = Math.floor((sug_bms.length-1) / 10) + 1;
+		// $("#head").html("Page: " + num_page);
+		if(num_page > 1) {
+			var links = "<tr><td></td><td></td><td>";
+			for(var j=1; j<=num_page; j++) {
+				links += "<a href=\"#\" id=\"link"+ j +"\">" + j +"</a>&nbsp;";
+			}
+			links += "</td></tr>";
+			$("#bookmarks").after(links);
+			
+			for(var j=1; j<=num_page; j++) {
+				$("#link"+j).click({total: num_page, page: j}, showPage);
+			}
+			
+			$("#link1").trigger("click");
+		}
 		changeStateTo("suggestion");
 	}
 	
-	function showPage(p) {
-		$("#head").html("Page: " + p );
+	function showPage(event) {
+		for(var i=1; i<=event.data.total; i++) {
+            $(".page"+i).hide();
+        }
+		$(".page"+event.data.page).show();
+		// $("#head").html("total: " + event.data.total + "Page: " + event.data.page);
 		// $("tr").each(function () {$(this).hide();});
 		// $("tr:lt(10)").each(function () {$(this).show();});
 	}
